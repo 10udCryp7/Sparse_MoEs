@@ -1,14 +1,22 @@
 import torch
 from torch import nn
-
-from head_attention import *
-# class MultiHeadAttention(nn.Module):
-#     def __init__(self, n_heads):
-#         super(MultiHeadAttention,self).__init__()
-#         M
+from head_attention import Head
 
 
-x = torch.randn(4,8,32)
-mht = nn.ModuleList([Head(16,32) for _ in range(4)])
+class MultiHeadAttention(nn.Module):
+    def __init__(self, n_heads, head_size, embedding_size):
+        super(MultiHeadAttention, self).__init__()
+        self.n_heads = n_heads
+        self.head_size = head_size
+        self.embedding_size = embedding_size
+        self.head_list = [Head(
+            head_size=self.head_size, embedding_size=self.embedding_size) for _ in range(n_heads)]
+        self.concat = lambda x: torch.concat([head(x) for head in self.head_list], dim=-1)
+        self.fc = nn.Linear(n_heads*head_size, head_size)
+        self.dropout = nn.Dropout()
 
-print(type(mht[0]))
+    def forward(self, x):
+        concat_out = self.concat(x)
+        fc_out = self.fc(concat_out)
+        out = self.dropout(fc_out)
+        return out  
