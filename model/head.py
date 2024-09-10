@@ -29,10 +29,3 @@ class Head(nn.Module):
         weight = self.dropout(weight)
         out = weight @ v
         return out
-
-
-model = Head(32, 64)
-
-for name, param in model.named_parameters():
-    if param.requires_grad:
-        print(name, param.data)
