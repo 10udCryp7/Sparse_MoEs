@@ -3,10 +3,12 @@ from torch import nn
 
 
 class Head(nn.Module):
-    def __init__(self, head_size, n_embedding):
+    def __init__(self, head_size, embedding_size):
         super(Head, self).__init__()
+        # size of head
         self.head_size = head_size
-        self.n_embedding = n_embedding
+        # size of vector embedding
+        self.n_embedding = embedding_size
         self.query = nn.Linear(self.n_embedding, self.head_size, bias=False)
         self.key = nn.Linear(self.n_embedding, self.head_size, bias=False)
         self.value = nn.Linear(self.n_embedding, self.head_size, bias=False)
