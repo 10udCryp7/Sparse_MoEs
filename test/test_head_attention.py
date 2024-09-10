@@ -1,13 +1,13 @@
-from head_attention import *
 import unittest
 import torch
 import sys
 sys.path.insert(0, 'model')
 
+from head_attention import Head
 
 class TestHead(unittest.TestCase):
     def test_head_init(self):
-        head = Head(head_size=16, n_embedding=32)
+        head = Head(head_size=16, embedding_size=32)
         # check initialization
         self.assertEqual(head.head_size, 16)
         self.assertEqual(head.n_embedding, 32)
@@ -16,8 +16,8 @@ class TestHead(unittest.TestCase):
         B, T, C = 4, 8, 32
         H = 16
         x = torch.randn(B, T, C)
-        head = Head(head_size=H, n_embedding=C)
-        tril = torch.tril(torch.ones(T, T))
+        head = Head(head_size=H, embedding_size=C)
+        tril = head.tril(torch.ones(T, T))
         q = head.query(x)  # (B,T,C) @ (B,C,H) = (B,T,H)
         k = head.key(x)  # (B,T,C) @ (B,C,H) = (B,T,H)
         v = head.value(x)  # (B,T,C) @ (B,C,H) = (B,T,H)
